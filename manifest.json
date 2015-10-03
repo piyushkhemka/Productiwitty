@@ -1,0 +1,22 @@
+{
+	"name": "Productiwitty",
+	"version": "0.1",
+	"description": "The extension loads a popup every 15 minutes and reminds you to stay productive. 
+	 				You can customise the message and time and switch it on-off with a simple click.",
+	"manifest_version": 2,
+	"author": "Piyush Khemka",
+	"icons": { "16": "images/green.png",
+				"off": "images/red.png",
+				"on": "images/green.png"
+
+	},
+	"background_page": "background.html",
+	"permissions": [ "notifications",
+					 "tabs"
+		],
+	"browser_action": {
+		"default_icon": "images/green.png",
+		"default_popup": "popup.html",
+		"default_title": "Toggle Productiwitty"
+	}
+}

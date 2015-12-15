@@ -1,40 +1,64 @@
-var ExtensionOn = true;
 
+var ExtensionOn = true;
+chrome.alarms.clearAll();
+/*
+chrome.windows.create({url: "hello.html", 
+					   type:"popup",
+					   focused: true, 
+					height: 400, width:1000,
+					
+      				});
+*/
 function SwitchOn()
  {
-     chrome.alarms.create("Alarm", {delayInMinutes: 0.1, periodInMinutes: 1} );
-     console.log("Switch On function called");
+     chrome.alarms.create('Alarm', {
+     periodInMinutes: 1,
+     delayInMinutes:  2
+	});
+     console.log("Switch On function called" + Date());
 
  }
 
 function SwitchOff() 
  {
     chrome.alarms.clear("Alarm");
-    console.log("Switch Off function called");
+    console.log("Switch Off function called" + Date() );
 
  }
 
  function showpopup()
 {
+ if(ExtensionOn)
+ {
+	chrome.browserAction.onClicked(function(evt) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {message: "show the popup"});
+  });
+ });
+}
+}
+/*
 	if(ExtensionOn)
 	{
-		alert("Inside function showpopup");
+		alert("Inside function showpopup" + Date());
 		console.log("alert shown");
 		console.log("Is extension on?" + ExtensionOn);
 	}
 }
+	*/
+
 
 function click(e)
 {
 	if(ExtensionOn)
 	{
 		SwitchOff();
-		console.log("switched off");
+		console.log("switched off" + Date());
 		chrome.browserAction.setBadgeText({text: "Off"});
 		
 	}
 
-	else if(!ExtensionOn)
+	else
 	{
 		SwitchOn();
 		console.log("switched on");
@@ -50,25 +74,9 @@ function click(e)
 	
 
 }
-/*
 
-function click(e){
 
-chrome.extension.onMessage.addListener(
-	function(request, sender, sendResponse) {
-		if(request.cmd == "setOnOffState")
-		{
-			ExtensionOn = request.data.value;
-		}
-
-		if(request.cmd == "getOnOffState")
-		{
-			sendResponse(ExtensionOn);
-		}
-	});
-
-}*/
-
+chrome.runtime.onInstalled.addListener(SwitchOn);
 
 chrome.alarms.onAlarm.addListener(showpopup);
 

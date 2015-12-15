@@ -1,5 +1,3 @@
-chrome.alarms.create("Alarm", {delayInMinutes: 0.1, periodInMinutes: 1} );
 
-
-
-  
+// Store On off toggles or minutes update.
+// Send message to content script

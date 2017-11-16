@@ -22,6 +22,7 @@ function SwitchOn() {
  }
 
  function SwitchOff() {
+
     chrome.alarms.clear("Alarm");
     console.log("Switch Off function called" + Date() );
 
@@ -68,6 +69,3 @@ chrome.runtime.onInstalled.addListener(SwitchOn);
 chrome.alarms.onAlarm.addListener(showpopup);
 
 chrome.browserAction.onClicked.addListener(click);
-
-
-

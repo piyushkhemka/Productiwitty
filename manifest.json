@@ -5,7 +5,6 @@
 
 	"manifest_version": 2,
 	"author": "Piyush Khemka",
-<<<<<<< HEAD
 	"icons": { "16": "images/green.png"
 
 	},
@@ -35,42 +34,11 @@
 	"web_accessible_resources": [
     "test.js"
   ],
-=======
-	"icons": { "16": "images/green.png",
-				"off": "images/red.png",
-				"on": "images/green.png"
-
-	},
-	"permissions": [ "notifications",
-					 "tabs",
-					 "alarms"
-		],
-
-	"background": {
-		"scripts": ["background.js"],
-		"persistent": false
-	},
-
-	"content_scripts" : [
-    {
-        "matches" : [ "<all_urls>"],
-        "js": ["hello.js"],
-        "css": [ "hello.css" ]
-    }
-],
->>>>>>> efa260cb14d1228ddafa8afdf4427ed410dfeedd
 
 
 	"browser_action": {
 		"default_icon": "images/green.png",
-<<<<<<< HEAD
 		"default_title": "Toggle Productiwitty"
 	}
 }
 
-=======
-		"default_title": "Toggle Productiwitty",
-		"default_popup": "popup.html"
-	}
-}
->>>>>>> efa260cb14d1228ddafa8afdf4427ed410dfeedd

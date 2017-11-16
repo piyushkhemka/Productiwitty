@@ -1,0 +1,44 @@
+{
+	"name": "Productiwitty",
+	"version": "0.1",
+	"description": "The extension throws a popup every 15 minutes and reminds you to stay productive. It can easily be switched on and off with a simple click.",
+
+	"manifest_version": 2,
+	"author": "Piyush Khemka",
+	"icons": { "16": "images/green.png"
+
+	},
+
+	"options_page": "options.html",
+
+
+	"permissions": [ "tabs",
+					 "activeTab",
+					 "alarms",
+        			 "<all_urls>"
+		],
+
+	"content_scripts" : [
+    {
+        "matches" : [ "<all_urls>"],
+        "js": ["sweetalert.js"]
+    }
+	],
+
+
+	"background": {
+	    "scripts": ["background.js"],
+	    "persistent": false
+	},
+
+	"web_accessible_resources": [
+    "test.js"
+  ],
+
+
+	"browser_action": {
+		"default_icon": "images/green.png",
+		"default_title": "Toggle Productiwitty"
+	}
+}
+

@@ -1,0 +1,17 @@
+.center{
+    display:block;
+    width:50%;
+    margin:15% auto;
+    text-align: center;
+    vertical-align: bottom;
+    font-family: sans-serif;
+}
+
+body {
+	  background: -webkit-linear-gradient(#fff, #F5F5F5);
+    background: -moz-linear-gradient(#fff, #F5F5F5);
+    background: -o-linear-gradient(#fff, #F5F5F5);
+    background: linear-gradient(#fff, #F5F5F5);
+    background-color:#F5F5F5;
+    font-size: 120%;
+}

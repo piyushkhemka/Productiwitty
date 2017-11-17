@@ -1,22 +1,46 @@
 <html>
 <head>
-	<title>Options for Color Chooser</title>
-	<!-- <script type="text/javascript" src="options.js"></script> -->
+	<title>Settings Page for Productiwitty</title>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="options.css">
+	<script type="text/javascript" src="options.js"></script>
 </head>
-<body onload="loadOptions()">
-	<h1>Timer</h1>
-	<select id="timer">
-		<option value="5mins">5 minutes</option>
-		<option value="10mins">10 minutes</option>
-		<option value="15mins">15 minutes</option>
-		<option value="30mins">30 minutes</option>
-		<option value="60mins">1 hour</option>
-		<option value="180mins">3 hour</option>
-		<option value="360mins">6 hours</option>
-	</select>
-	<br />
-	<button onclick="saveOptions()">Save</button>
-	<br />
-	<button onclick="eraseOptions()">Restore default</button>
+
+<body id="loadOptions">
+	<div class="container">
+		<div>
+            <form class="center col-md-4 col-md-offset-4">
+            <h1> SETTINGS </h1>
+            <br />
+            <br />
+            <div class="form-group">
+			<label for="settings">Frequency of reminder: </label>
+			<select id="timer" button class="form-control btn btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <option value="0.1">0.1 minutes</option>
+				<option value="5mins">5 minutes</option>
+				<option value="10mins">10 minutes</option>
+				<option value="15mins">15 minutes</option>
+				<option value="30mins">30 minutes</option>
+				<option value="60mins">1 hour</option>
+				<option value="180mins">3 hour</option>
+				<option value="360mins">6 hours</option>
+			 </select>
+            </div>
+            <br />
+            <div class="form-group">
+			<label for="settings">Message to display: </label>
+                <textarea class="form-control" id='displaymessage' rows="4">Focus. Don't get distracted</textarea>
+            </div>
+            <br />
+			<button id="save" type="button" class="btn btn-success">Save</button>
+			<button id="restore" type="button" class="btn btn-secondary">Restore default</button>
+            </form>
+		</div>
+	</div>
 </body>
 </html>
+

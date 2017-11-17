@@ -3,38 +3,63 @@ chrome.alarms.clearAll();
 
 
 // Initially set to 15
-var timerPeriodInMinutes = 0.1;
-var timeDelayInMinutes = 0.1;
-var config = {
-	message: "Focus. Don't get distracted",
-	button: "OK",
-	icon: "success"
-};
+var defaultTimerPeriodInMinutes = 0.1;
+var defaultTimeDelayInMinutes = 0.1;
+var defaultMessage = "Focus. Don't get distracted";
+var timerPeriodInMinutes, timeDelayInMinutes, displaymessage;
 
-console.log("local storage timer = " + localStorage.timer);
+if(localStorage.timer == undefined) {
+	timerPeriodInMinutes = defaultTimerPeriodInMinutes;
+	timeDelayInMinutes = defaultTimeDelayInMinutes;
+} else {
+	timerPeriodInMinutes = localStorage.timer;
+	timeDelayInMinutes = localStorage.timer;
+}
+
+if(localStorage.displaymessage == undefined) {
+	displaymessage = defaultMessage;
+} else {
+	displaymessage = localStorage.displaymessage;
+}
+
+console.log("ExtensionOn = " + ExtensionOn);
+console.log("local storage timer = " + timerPeriodInMinutes);
+console.log("final displaymessage = " + displaymessage);
 
 
 function SwitchOn() {
      chrome.alarms.create('Alarm', {
-     periodInMinutes: timerPeriodInMinutes,
-     delayInMinutes:  timeDelayInMinutes
+     periodInMinutes: parseFloat(timerPeriodInMinutes),
+     delayInMinutes:  parseFloat(timeDelayInMinutes)
     });
+     console.log("Switch On function called" + Date() );
  }
 
  function SwitchOff() {
 
     chrome.alarms.clear("Alarm");
     console.log("Switch Off function called" + Date() );
-
  }
 
  function showpopup() {
+
+ 		console.log("ExtensionOn = " + ExtensionOn);
+ 		console.log(!ExtensionOn);
+ 		if(!ExtensionOn) {
+ 			SwitchOff();
+ 			return;
+ 		}
+
+ 		var config = {
+			message: displaymessage,
+			button: "OK",
+			icon: "success"
+		};
+
 		console.log(" in show popuup");
 		console.log("is extension on? = " + ExtensionOn);
 		console.log(Date());
-		// chrome.tabs.executeScript(null, {file: 'sweetalert.js'}, function() {
-		//     console.log('Its loaded!');
-		// });
+
 		chrome.tabs.executeScript(null, {
 		code: 'var config = ' + JSON.stringify(config)
 		}, function() {
@@ -51,16 +76,12 @@ function click(e) {
 		console.log("switched off" + Date());
 		chrome.browserAction.setIcon({path : "images/red128.png"});
 		chrome.browserAction.setBadgeText({text: "Off"});
-	}
-
-	else {
+	} else {
 		SwitchOn();
 		console.log("switched on");
 		chrome.browserAction.setIcon({path : "images/green128.png"});
 		chrome.browserAction.setBadgeText({text: "On"});
-		chrome.browserAction.setPopup();
 	}
-
 	ExtensionOn = !ExtensionOn;
 }
 

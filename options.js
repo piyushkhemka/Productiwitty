@@ -1,14 +1,22 @@
-var defaultTimerInMinutes = 15;
+var defaultTimerInMinutes = 0.1;
+var defaultDisplayMessage = "Focus. Don't get distracted";
 
-function loadOptions() {
+window.onload = function () {
+
 	var timer = localStorage["timer"];
+	var displaymessage = localStorage["displaymessage"];
+	console.log(timer);
+	console.log(displaymessage);
 
-	// valid colors are red, blue, green and yellow
 	if (timer == undefined) {
 		timer = defaultTimerInMinutes;
 	}
 
-	var select = document.getElementById("defaultTimerInMinutes");
+	if(displaymessage == undefined) {
+		displaymessage = defaultDisplayMessage;
+	}
+
+	var select = document.getElementById("timer");
 	for (var i = 0; i < select.children.length; i++) {
 		var child = select.children[i];
 			if (child.value == timer) {
@@ -16,15 +24,26 @@ function loadOptions() {
 			break;
 		}
 	}
-}
 
-function saveOptions() {
-	var select = document.getElementById("timer");
-	var userTimer = select.children[select.selectedIndex].value;
-	localStorage["timer"] = userTimer;
-}
+	document.getElementById("displaymessage").defaultValue = displaymessage;
 
-function eraseOptions() {
-	localStorage.removeItem("timer");
-	location.reload();
+
+	document.getElementById('restore').onclick = function eraseOptions() {
+		localStorage.removeItem("timer");
+		localStorage.removeItem("displaymessage");
+		chrome.runtime.reload();
+	};
+
+	document.getElementById('save').onclick = function saveOptions() {
+		console.log("in save js");
+		var select = document.getElementById("timer");
+		var userTimer = select.children[select.selectedIndex].value;
+		
+		localStorage["timer"] = userTimer;
+		localStorage["displaymessage"] = document.getElementById("displaymessage").value;
+
+		console.log(userTimer);
+		console.log(localStorage["displaymessage"]);
+		chrome.runtime.reload();
+	};
 }

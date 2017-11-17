@@ -1,10 +1,8 @@
 var ExtensionOn = true;
 chrome.alarms.clearAll();
 
-
-// Initially set to 15
-var defaultTimerPeriodInMinutes = 0.1;
-var defaultTimeDelayInMinutes = 0.1;
+var defaultTimerPeriodInMinutes = 15;
+var defaultTimeDelayInMinutes = 15;
 var defaultMessage = "Focus. Don't get distracted";
 var timerPeriodInMinutes, timeDelayInMinutes, displaymessage;
 

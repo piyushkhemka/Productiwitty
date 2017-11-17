@@ -1,4 +1,4 @@
-var defaultTimerInMinutes = 0.1;
+var defaultTimerInMinutes = 15;
 var defaultDisplayMessage = "Focus. Don't get distracted";
 
 window.onload = function () {

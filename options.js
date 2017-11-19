@@ -19,6 +19,7 @@ window.onload = function () {
 	var select = document.getElementById("timer");
 	for (var i = 0; i < select.children.length; i++) {
 		var child = select.children[i];
+		console.log("timer value right now =  " + timer);
 			if (child.value == timer) {
 			child.selected = "true";
 			break;

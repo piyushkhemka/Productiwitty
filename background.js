@@ -61,7 +61,7 @@ function SwitchOn() {
 		chrome.tabs.executeScript(null, {
 		code: 'var config = ' + JSON.stringify(config)
 		}, function() {
-		    chrome.tabs.executeScript(null, {file: 'sweetalert.js'}, function() {
+		    chrome.tabs.executeScript(null, {file: 'raisealert.js'}, function() {
 		    	console.log("Alarm triggered");
 		    });
 		});

@@ -1,7 +1,7 @@
 {
 	"name": "Productiwitty",
-	"version": "0.1",
-	"description": "The extension reminds you every 15 minutes to stay productive & put away distractions. It can easily be switched on when you are working on something important & need to focus. Switch it off with a simple click on the icon, when you want to Netflix & Chill ;)",
+	"version": "1.0",
+	"description": "Productiwitty reminds you every 15 minutes to stay focussed & put away distractions.",
 
 	"manifest_version": 2,
 	"author": "Piyush Khemka",
@@ -21,7 +21,7 @@
 
 	"background": {
 	    "scripts": ["background.js"],
-	    "persistent": false
+	    "persistent": true
 	},
 
 	"web_accessible_resources": [

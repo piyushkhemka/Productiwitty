@@ -1,50 +1,39 @@
-var defaultTimerInMinutes = 15;
-var defaultDisplayMessage = "Focus. Don't get distracted";
+const DEFAULTS = {
+  timer: "15mins",
+  displaymessage: "Focus. Don't get distracted",
+};
 
-window.onload = function () {
+window.onload = async function () {
+  const data = await chrome.storage.local.get(["timer", "displaymessage"]);
+  const timer = data.timer ?? DEFAULTS.timer;
+  const displaymessage = data.displaymessage ?? DEFAULTS.displaymessage;
 
-	var timer = localStorage["timer"];
-	var displaymessage = localStorage["displaymessage"];
-	console.log(timer);
-	console.log(displaymessage);
+  const select = document.getElementById("timer");
+  for (const child of select.children) {
+    if (child.value === timer) {
+      child.selected = true;
+      break;
+    }
+  }
 
-	if (timer == undefined) {
-		timer = defaultTimerInMinutes;
-	}
+  document.getElementById("displaymessage").value = displaymessage;
 
-	if(displaymessage == undefined) {
-		displaymessage = defaultDisplayMessage;
-	}
+  document.getElementById("restore").onclick = async function () {
+    await chrome.storage.local.remove([
+      "timer",
+      "displaymessage",
+      "extensionOn",
+    ]);
+    chrome.runtime.reload();
+  };
 
-	var select = document.getElementById("timer");
-	for (var i = 0; i < select.children.length; i++) {
-		var child = select.children[i];
-		console.log("timer value right now =  " + timer);
-			if (child.value == timer) {
-			child.selected = "true";
-			break;
-		}
-	}
-
-	document.getElementById("displaymessage").defaultValue = displaymessage;
-
-
-	document.getElementById('restore').onclick = function eraseOptions() {
-		localStorage.removeItem("timer");
-		localStorage.removeItem("displaymessage");
-		chrome.runtime.reload();
-	};
-
-	document.getElementById('save').onclick = function saveOptions() {
-		console.log("in save js");
-		var select = document.getElementById("timer");
-		var userTimer = select.children[select.selectedIndex].value;
-		
-		localStorage["timer"] = userTimer;
-		localStorage["displaymessage"] = document.getElementById("displaymessage").value;
-
-		console.log(userTimer);
-		console.log(localStorage["displaymessage"]);
-		chrome.runtime.reload();
-	};
-}
+  document.getElementById("save").onclick = async function () {
+    const userTimer = select.children[select.selectedIndex].value;
+    const userMessage = document.getElementById("displaymessage").value;
+    await chrome.storage.local.set({
+      timer: userTimer,
+      displaymessage: userMessage,
+    });
+    chrome.runtime.reload();
+  };
+};

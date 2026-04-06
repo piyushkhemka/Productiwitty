@@ -1,90 +1,99 @@
-var ExtensionOn = true;
-chrome.alarms.clearAll();
+const DEFAULTS = {
+  timer: "15mins",
+  displaymessage: "Focus. Don't get distracted",
+  extensionOn: true,
+};
 
-var defaultTimerPeriodInMinutes = 15;
-var defaultTimeDelayInMinutes = 15;
-var defaultMessage = "Focus. Don't get distracted";
-var timerPeriodInMinutes, timeDelayInMinutes, displaymessage;
+const TIMER_MAP = {
+  "5mins": 5,
+  "10mins": 10,
+  "15mins": 15,
+  "30mins": 30,
+  "60mins": 60,
+  "180mins": 180,
+  "360mins": 360,
+};
 
-if(localStorage.timer == undefined) {
-	timerPeriodInMinutes = defaultTimerPeriodInMinutes;
-	timeDelayInMinutes = defaultTimeDelayInMinutes;
-} else {
-	timerPeriodInMinutes = localStorage.timer;
-	timeDelayInMinutes = localStorage.timer;
+async function getSettings() {
+  const data = await chrome.storage.local.get([
+    "timer",
+    "displaymessage",
+    "extensionOn",
+  ]);
+  return {
+    timer: data.timer ?? DEFAULTS.timer,
+    displaymessage: data.displaymessage ?? DEFAULTS.displaymessage,
+    extensionOn: data.extensionOn ?? DEFAULTS.extensionOn,
+  };
 }
 
-if(localStorage.displaymessage == undefined) {
-	displaymessage = defaultMessage;
-} else {
-	displaymessage = localStorage.displaymessage;
+async function switchOn(timerKey) {
+  const minutes = TIMER_MAP[timerKey] ?? 15;
+  await chrome.alarms.clear("Alarm");
+  chrome.alarms.create("Alarm", {
+    periodInMinutes: minutes,
+    delayInMinutes: minutes,
+  });
 }
 
-console.log("ExtensionOn = " + ExtensionOn);
-console.log("local storage timer = " + timerPeriodInMinutes);
-console.log("final displaymessage = " + displaymessage);
+async function switchOff() {
+  await chrome.alarms.clear("Alarm");
+}
 
+async function showpopup() {
+  const { extensionOn, displaymessage } = await getSettings();
+  if (!extensionOn) {
+    await switchOff();
+    return;
+  }
 
-function SwitchOn() {
-     chrome.alarms.create('Alarm', {
-     periodInMinutes: parseFloat(timerPeriodInMinutes),
-     delayInMinutes:  parseFloat(timeDelayInMinutes)
+  const tabs = await chrome.tabs.query({
+    active: true,
+    lastFocusedWindow: true,
+  });
+  if (!tabs.length || !tabs[0].id) return;
+  const tabId = tabs[0].id;
+
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["raisealert.js"],
     });
-     console.log("Switch On function called" + Date() );
- }
-
- function SwitchOff() {
-
-    chrome.alarms.clear("Alarm");
-    console.log("Switch Off function called" + Date() );
- }
-
- function showpopup() {
-
- 		console.log("ExtensionOn = " + ExtensionOn);
- 		console.log(!ExtensionOn);
- 		if(!ExtensionOn) {
- 			SwitchOff();
- 			return;
- 		}
-
- 		var config = {
-			message: displaymessage,
-			button: "OK",
-			icon: "success"
-		};
-
-		console.log(" in show popuup");
-		console.log("is extension on? = " + ExtensionOn);
-		console.log(Date());
-
-		chrome.tabs.executeScript(null, {
-		code: 'var config = ' + JSON.stringify(config)
-		}, function() {
-		    chrome.tabs.executeScript(null, {file: 'raisealert.js'}, function() {
-		    	console.log("Alarm triggered");
-		    });
-		});
-
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: (message) => {
+        swal({ title: message, icon: "success", button: "OK" });
+      },
+      args: [displaymessage],
+    });
+  } catch (err) {
+    console.error("Productiwitty: failed to show alert:", err);
+  }
 }
 
-function click(e) {
-	if(ExtensionOn) {
-		SwitchOff();
-		console.log("switched off" + Date());
-		chrome.browserAction.setIcon({path : "images/red128.png"});
-		chrome.browserAction.setBadgeText({text: "Off"});
-	} else {
-		SwitchOn();
-		console.log("switched on");
-		chrome.browserAction.setIcon({path : "images/green128.png"});
-		chrome.browserAction.setBadgeText({text: "On"});
-	}
-	ExtensionOn = !ExtensionOn;
+async function handleClick() {
+  const { extensionOn, timer } = await getSettings();
+  const newState = !extensionOn;
+  await chrome.storage.local.set({ extensionOn: newState });
+
+  if (newState) {
+    await switchOn(timer);
+    chrome.action.setIcon({ path: "images/green128.png" });
+    chrome.action.setBadgeText({ text: "On" });
+  } else {
+    await switchOff();
+    chrome.action.setIcon({ path: "images/red128.png" });
+    chrome.action.setBadgeText({ text: "Off" });
+  }
 }
 
-chrome.runtime.onInstalled.addListener(SwitchOn);
+chrome.runtime.onInstalled.addListener(async () => {
+  const { timer } = await getSettings();
+  await chrome.storage.local.set({ extensionOn: true });
+  await switchOn(timer);
+  chrome.action.setIcon({ path: "images/green128.png" });
+  chrome.action.setBadgeText({ text: "On" });
+});
 
 chrome.alarms.onAlarm.addListener(showpopup);
-
-chrome.browserAction.onClicked.addListener(click);
+chrome.action.onClicked.addListener(handleClick);

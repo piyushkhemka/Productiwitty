@@ -5,6 +5,7 @@ const DEFAULTS = {
 };
 
 const TIMER_MAP = {
+  "1mins": 1,
   "5mins": 5,
   "10mins": 10,
   "15mins": 15,
@@ -47,17 +48,20 @@ async function showpopup() {
     return;
   }
 
-  const tabs = await chrome.tabs.query({
-    active: true,
-    lastFocusedWindow: true,
-  });
-  if (!tabs.length || !tabs[0].id) return;
-  const tabId = tabs[0].id;
+  let tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  let tab = tabs.find((t) => t.url?.startsWith("http"));
+  if (!tab) {
+    tabs = await chrome.tabs.query({ active: true, windowType: "normal" });
+    tab = tabs.find((t) => t.url?.startsWith("http"));
+  }
+  if (!tab) return;
+  const tabId = tab.id;
 
   try {
     await chrome.scripting.executeScript({
       target: { tabId },
       files: ["raisealert.js"],
+      world: "MAIN",
     });
     await chrome.scripting.executeScript({
       target: { tabId },
@@ -65,6 +69,7 @@ async function showpopup() {
         swal({ title: message, icon: "success", button: "OK" });
       },
       args: [displaymessage],
+      world: "MAIN",
     });
   } catch (err) {
     console.error("Productiwitty: failed to show alert:", err);
